@@ -1,4 +1,8 @@
 #!/usr/bin/node
+
+const UserController = require('../controllers/UserController');
+const auth = require('express').Router();
+
 /**
  * Authentication Router
  *  Endpoints
@@ -8,14 +12,7 @@
  *  @changepassword
  */
 
-const auth = require('express').Router();
-
-auth.post('/login', (req, res) => {
-    const payload = {
-        'status': 'success',
-        'message': 'You are successfully logged in!'
-    }
-    return res.send(200).json(payload);
-})
+auth.post('/login', UserController.login)
+auth.post('/signup', UserController.signup)
 
 module.exports = auth;
