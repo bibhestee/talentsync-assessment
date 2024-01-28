@@ -11,7 +11,7 @@ function unknownEndpoint(req, res) {
         'message': 'unknown endpoint'
     };
 
-    return res.send(403).json(payload);
+    return res.status(400).json(payload);
 }
 
 module.exports = unknownEndpoint;
