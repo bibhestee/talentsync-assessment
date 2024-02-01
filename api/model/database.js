@@ -52,7 +52,9 @@ class Database {
 
     static getAllModel(model) {
         if (model === 'User') {
-            return __USER_DB__;
+            let users = __USER_DB__;
+            users.forEach((value) => (delete value.hashedPassword));
+            return users;
         }
         else if (model === 'Blog') {
             return __BLOG_DB__;
