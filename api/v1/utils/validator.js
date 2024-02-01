@@ -30,3 +30,5 @@ async function validateUserDetails(username, email, password, answer) {
         return true;
       }
 }
+
+module.exports = { validateUserDetails };
