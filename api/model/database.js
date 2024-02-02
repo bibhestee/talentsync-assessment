@@ -79,9 +79,42 @@ class Database {
             return null;
         }
         else {
-            throw new Error('Invalid model specified')
+            throw new Error('Invalid model specified');
         }
     }
+
+    static updateModel(model, id, data) {
+        if (model === 'User') {
+            const { username, email, answer, hashedPassword } = data;
+            // Check if user exists
+            const user = this.getModel('User', {id: id});
+            if (!user) {
+                return null;
+            }
+            // Update the details
+            if (username) user.username = username;
+            if (email) user.email = email;
+            if (answer) user.answer = answer;
+            if (hashedPassword) user.hashedPassword = hashedPassword;
+            let updated = false;
+
+            __USER_DB__.forEach((value) => {
+                if (value.id == id) {
+                    value = user;
+                    updated = true;
+                }
+            });
+            if (updated) return user;
+            return null;
+
+        } else if (model === 'Blog') {
+
+        }
+        else {
+            throw new Error('Invalid model specified');
+        }
+    }
+
 }
 
 module.exports = Database;
