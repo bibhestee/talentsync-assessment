@@ -115,6 +115,18 @@ class Database {
         }
     }
 
+    static deleteModel(model, id) {
+        if (model === 'User') {
+            const prevLength= __USER_DB__.length;
+            __USER_DB__ = __USER_DB__.filter(value => value.id !== id);
+            return prevLength !== __USER_DB__.length;
+            
+        } else if (model === 'Blog') {
+
+        } else {
+            throw new Error('Invalid model specified');
+        }
+    }
 }
 
 module.exports = Database;
