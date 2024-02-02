@@ -50,6 +50,15 @@ class UserController {
                 message: 'answer should have min of 3 characters, what is your favourite city?'
             });
         }
+
+        // Validate password
+        const isValid = validatePassword(password);
+        if (!isValid) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'password should contain at least 1 Uppercase, 1 lowercase, 1 digit, and 1 special character.'
+            });
+        }
         // check if user exists
         try {
             const userExists = Database.getModel('User', {email: email})
