@@ -8,6 +8,9 @@
  *  @username
  *  @password
  *  @answer
+ * 
+ * Password validator
+ *  @password
  */
 
 const Joi = require('joi');
@@ -31,4 +34,16 @@ async function validateUserDetails(username, email, password, answer) {
       }
 }
 
-module.exports = { validateUserDetails };
+function validatePassword(password) {
+  const passwordStrength = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    digit: /\d/.test(password),
+    symbol: /[!@#$%^&*()_+-={}[\]|:;"<>,.?/~]/.test(password)
+  };
+  return Object.values(passwordStrength).every((value) => value === true);
+}
+
+
+module.exports = { validateUserDetails, validatePassword };
