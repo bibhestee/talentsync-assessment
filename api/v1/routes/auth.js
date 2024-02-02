@@ -12,7 +12,8 @@ const auth = require('express').Router();
  *  @changepassword
  */
 
-auth.post('/login', UserController.login)
-auth.post('/signup', UserController.signup)
+auth.post('/login', UserController.login);
+auth.post('/signup', UserController.signup);
+auth.put('/change-password/:id', UserController.changePassword);
 
 module.exports = auth;
