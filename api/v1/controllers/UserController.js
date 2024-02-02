@@ -11,6 +11,10 @@ const {validateUserDetails} = require('../utils/validator');
  *  @signup
  *  @forgetpassword
  *  @changepassword
+ *  @getAllUser
+ *  @getUser
+ *  @deleteUser
+ *  @updateUser
  */
 
 class UserController {
@@ -122,6 +126,51 @@ class UserController {
     static getAllUser(req, res) {
         const users = Database.getAllModel('User');
         return res.status(200).json(users);
+    }
+
+    static updateUser(req, res) {
+        const { username, email, answer } = req.body;
+        const { id } = req.params;
+
+        try {
+            const user = Database.getModel('User', {id: id});
+            if (!user) {
+                return res.status(404).json({
+                    status: 'error',
+                    message: 'no user with the provided id'
+                });
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'error',
+                message: `internal server error: ${err}`
+            });
+        }
+
+        if (username || email || answer) {
+            try {
+                const updatedUser = Database.updateModel('User', id, {username: username, email: email, answer: answer});
+                if (updatedUser) {
+                    return res.status(200).json({
+                        status: 'success',
+                        message: 'user updated successfully',
+                        data: updatedUser
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+                return res.status(500).json({
+                    status: 'error',
+                    message: `internal server error: ${err}`
+                });
+            }
+
+        }
+        return res.status(400).json({
+            status: 'error',
+            message: 'no information provided'
+        });
     }
 }
 
