@@ -15,6 +15,6 @@ const user = require('express').Router();
 user.get('/users', UserController.getAllUser);
 user.get('/user/:id', UserController.getUser);
 user.put('/user/:id', UserController.updateUser);
-// user.delete('/user/:id', UserController.deleteUser);
+user.delete('/user/:id', UserController.deleteUser);
 
 module.exports = user;
