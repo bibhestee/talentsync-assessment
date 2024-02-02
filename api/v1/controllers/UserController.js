@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt');
 const Database = require('../../model/database')
-const {validateUserDetails} = require('../utils/validator');
+const {validateUserDetails, validatePassword} = require('../utils/validator');
 
 /**
  * User controller
@@ -10,7 +10,7 @@ const {validateUserDetails} = require('../utils/validator');
  *  @login
  *  @signup
  *  @forgetpassword
- *  @changepassword
+ *  @changePassword
  *  @getAllUser
  *  @getUser
  *  @deleteUser
@@ -96,6 +96,47 @@ class UserController {
             'status': 'success',
             'message': 'You are successfully logged in!'
         });
+    }
+
+    static async changePassword(req, res) {
+        const { password } = req.body;
+        const { id } = req.params;
+
+        try {
+            if (!password) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'password not provided'
+                });
+            }
+            // Validate password
+            const isValid = validatePassword(password);
+            if (!isValid) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'Password should contain at least 1 Uppercase, 1 lowercase, 1 digit, and 1 special character.'
+                });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const updated = Database.updateModel('User', id, {hashedPassword});
+            if (updated) {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'password changed successfully'
+                });
+            }
+            return res.status(400).json({
+                status: 'error',
+                message: 'no user with the provided id'
+            });
+            
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'error',
+                message: `internal server error: ${err}`
+            });
+        }
     }
 
     static async getUser(req, res) {
