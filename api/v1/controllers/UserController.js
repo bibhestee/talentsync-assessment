@@ -172,6 +172,25 @@ class UserController {
             message: 'no information provided'
         });
     }
+
+    static deleteUser(req, res) {
+        const { id } = req.params;
+
+        try {
+            const userDeleted = Database.deleteModel('User', id);
+            if (userDeleted) return res.status(204).end();
+            return res.status(404).json({
+                status: 'error',
+                message: 'no user with the provided id'
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'error',
+                message: `internal server error: ${err}`
+            });
+        }
+    }
 }
 
 module.exports = UserController;
