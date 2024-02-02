@@ -9,8 +9,8 @@ const cors = require('cors');
 const auth = require('./routes/auth');
 const blog = require('./routes/blog');
 const user = require('./routes/user');
-const unknownEndpoint = require('./utils/unknownEndpoint');
-const requestLogger = require('./utils/requestLogger');
+const unknownEndpoint = require('./middlewares/unknownEndpoint');
+const requestLogger = require('./middlewares/requestLogger');
 
 const app = express()
 
