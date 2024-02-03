@@ -9,7 +9,7 @@ const {validateUserDetails, validatePassword} = require('../utils/validator');
  *  Logics
  *  @login
  *  @signup
- *  @forgetpassword
+ *  @resetPassword
  *  @changePassword
  *  @getAllUser
  *  @getUser
@@ -105,6 +105,63 @@ class UserController {
             'status': 'success',
             'message': 'You are successfully logged in!'
         });
+    }
+
+    static async resetPassword(req, res) {
+        const { email, password, answer } = req.body;
+
+        try {
+            if (!password) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'password not provided'
+                });
+            }
+            if (!answer) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'please provide answer to the security question to reset password. What is your favourite city?'
+                })
+            }
+            // Validate password
+            const isValid = validatePassword(password);
+            if (!isValid) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'Password should contain at least 1 Uppercase, 1 lowercase, 1 digit, and 1 special character.'
+                });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            // Check if user exists
+            const user = Database.getModel('User', {email: email});
+            if (!user) {
+                return res.status(404).json({
+                    status: 'error',
+                    message: 'no user with the provided email'
+                });
+            }
+            // Validate the answer provided
+            if (user.answer !== answer) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'incorrect answer, please try again. What is your favourite city?'
+                });
+            }
+            const updated = Database.updateModel('User', user.id, {hashedPassword});
+            if (updated) {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'password reset successfully'
+                });
+            }
+            
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                status: 'error',
+                message: `internal server error: ${err}`
+            });
+        }
     }
 
     static async changePassword(req, res) {
