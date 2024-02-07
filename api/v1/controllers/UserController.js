@@ -1,14 +1,15 @@
 #!/usr/bin/node
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Database = require('../../model/database')
 const {validateUserDetails, validatePassword} = require('../utils/validator');
 
 /**
  * User controller
  *  Logics
- *  @login
  *  @signup
+ *  @signin
  *  @resetPassword
  *  @changePassword
  *  @getAllUser
@@ -100,11 +101,31 @@ class UserController {
         }
     }
 
-    static async login(req, res) {
-        return res.send(200).json({
-            'status': 'success',
-            'message': 'You are successfully logged in!'
-        });
+    static async signin(req, res) {
+        const { email, password } = req.body;
+
+        if (!password) return res.status(400).json({status: 'error', message: 'password is missing'});
+        if (!email) return res.status(400).json({status: 'error', message: 'email is missing'});
+        // Check if user is registered
+        const user = Database.getModel('User', {email});
+        if (!user) return res.status(404).json({status: 'error', message: 'user not registered'});
+        // Validate the password
+        try {
+            const valid = await bcrypt.compare(password, user.hashedPassword);
+            if (!valid) return res.status(400).json({status: 'error', message: 'incorrect password, try again'});
+            // Generate a bearer token
+            const token = jwt.sign({email: email, id: user.id}, 'SOMETHINGHERE');
+            res.setHeader('Access-Control-Expose-Header', 'Authorization');
+            res.setHeader('Authorization', `Bearer ${token}`);
+            return res.status(200).json({
+                status : 'success',
+                message : 'You are successfully logged in!',
+                data : {email, id: user.id}
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({status: 'error', message: 'internal server error'});
+        }
     }
 
     static async resetPassword(req, res) {
