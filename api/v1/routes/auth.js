@@ -2,6 +2,7 @@
 
 const UserController = require('../controllers/UserController');
 const auth = require('express').Router();
+const Authorization = require('../middlewares/authorization');
 
 /**
  * Authentication Router
@@ -15,6 +16,6 @@ const auth = require('express').Router();
 auth.post('/signin', UserController.signin);
 auth.post('/signup', UserController.signup);
 auth.post('/reset-password', UserController.resetPassword);
-auth.put('/change-password/:id', UserController.changePassword);
+auth.put('/change-password', Authorization, UserController.changePassword);
 
 module.exports = auth;
