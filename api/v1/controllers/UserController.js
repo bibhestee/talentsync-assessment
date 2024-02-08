@@ -192,7 +192,7 @@ class UserController {
 
     static async changePassword(req, res) {
         const { password } = req.body;
-        const { id } = req.params;
+        const { id } = req.auth;
 
         try {
             if (!password) {
