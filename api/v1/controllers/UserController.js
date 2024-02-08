@@ -119,7 +119,7 @@ class UserController {
             const valid = await bcrypt.compare(password, user.hashedPassword);
             if (!valid) return res.status(400).json({status: 'error', message: 'incorrect password, try again'});
             // Generate a bearer token
-            const token = jwt.sign({email: email, id: user.id}, 'SOMETHINGHERE');
+            const token = jwt.sign({email: email, id: user.id}, 'SOMETHINGHERE', {'expiresIn': '12h'});
             res.setHeader('Access-Control-Expose-Header', 'Authorization');
             res.setHeader('Authorization', `Bearer ${token}`);
             return res.status(200).json({
