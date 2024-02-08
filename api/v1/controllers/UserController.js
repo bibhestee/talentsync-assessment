@@ -85,12 +85,17 @@ class UserController {
                 username, email, hashedPassword, answer
             };
 
-            const user = Database.createModel('User', obj)
+            const user = Database.createModel('User', obj);
 
             return res.status(201).json({
                 status: 'success',
                 message: 'Your account is created successfully',
-                data: user
+                data: {
+                    email: user.email,
+                    username: user.username,
+                    answer: user.answer,
+                    id: user.id
+                }
             });
         } catch (err) {
             console.log(err);
