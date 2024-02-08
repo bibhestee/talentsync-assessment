@@ -14,16 +14,14 @@ function Authorization(req, res, next) {
     // Validate the auth token
     try {
         const isValid = jwt.verify(token, 'SOMETHINGHERE');
-        console.log(isValid)
         if (isValid) {
             req.auth = isValid;
             next();
         }
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({
+        return res.status(401).json({
             status: 'error',
-            message: `internal server error: ${err}`
+            message: 'session expired'
         });
     }
 }
