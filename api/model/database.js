@@ -70,7 +70,6 @@ class Database {
             const id = uuid.v4();
             data['id'] = id;
             __USER_DB__ = [data, ...__USER_DB__];
-            delete data.hashedPassword;
             return data;
         }
         else if (model === 'Blog') {
